@@ -1,5 +1,8 @@
 const { CronJob } = require("cron");
 
+const JSON5 = require("json5");
+const file = require("node:fs");
+
 const CheckIn = require("./check-in/index.js");
 const CodeRedeem = require("./code-redeem/index.js");
 const DailiesReminder = require("./dailies-reminder/index.js");
@@ -9,14 +12,15 @@ const MissedCheckIn = require("./missed-check-in/index.js");
 const RealmCurrency = require("./realm-currency/index.js");
 const ShopStatus = require("./shop-status/index.js");
 const Stamina = require("./stamina/index.js");
+const UpdateCookie = require("./update-cookie/index.js");
 const WeekliesReminder = require("./weeklies-reminder/index.js");
 
 let config;
 try {
-	config = require("../config.js");
+	config = JSON5.parse(file.readFileSync("./config.json5"));
 }
 catch {
-	config = require("../default.config.js");
+	config = JSON5.parse(file.readFileSync("./default.config.json5"));
 }
 
 const definitions = [
@@ -29,6 +33,7 @@ const definitions = [
 	RealmCurrency,
 	ShopStatus,
 	Stamina,
+	UpdateCookie,
 	WeekliesReminder
 ];
 
@@ -53,7 +58,9 @@ const initCrons = () => {
 			code: definition.code
 		};
 
-		const expression = config.crons[definition.name] || definition.expression;
+		const name = app.Utils.convertCase(definition.name, "kebab", "camel");
+
+		const expression = config.crons[name] || definition.expression;
 		const job = new CronJob(expression, () => cron.code(cron));
 		job.start();
 

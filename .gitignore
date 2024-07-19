@@ -174,8 +174,10 @@ dist
 # Finder (MacOS) folder config
 .DS_Store
 
-/config.js
+# Misc
+/config.json5
 types.js
+bun.lockb
 
 # Cache Path
 cache.json
@@ -183,3 +185,6 @@ cache.json
 # Cookie
 generated-cookie.txt
 diff.sh
+
+# npm
+package-lock.json

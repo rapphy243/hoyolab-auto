@@ -19,6 +19,7 @@ A multi-purpose tool for any supported Hoyoverse games. This tool is designed to
 - [Features](#features)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
+- [Migration](#migration)
 - [Usage](#usage)
 - [Notifications Setup](#notifications-setup)
 - [Running with Docker](#running-with-docker)
@@ -45,12 +46,14 @@ If you don't have a server to run this script and simply just want to use it for
   - **Expedition check**: Check your expeditions and sends a notification if they're done.
   - **Realm currency**: Sends a notification if your realm currency is capped.
   - **Code Redeems**: Search for codes and redeem them automatically.
+  - **Traveler's Diary**: Check your monthly currency income.
 - **Honkai: Star Rail**:
   - **Daily check-in**: Runs every midnight local time.
   - **Dailies**: Reminds you to do your dailies, such as commissions if you haven't done them at 09:00 (local time).
   - **Stamina check**: Reminds you to spend your stamina if you're at your set threshold or capped.
   - **Expedition check**: Check your expeditions and sends a notification if they're done.
   - **Code Redeems**: Search for codes and redeem them automatically.
+  - **Trailblazer Monthly Calendar**: Check your monthly currency income.
 - **Zenless Zone Zero**:
   - **Daily check-in**: Runs every midnight local time.
   - **Dailies**: Reminds you to do your dailies, such as commissions if you haven't done them at 09:00 (local time).
@@ -66,8 +69,23 @@ If you don't have a server to run this script and simply just want to use it for
 ## Installation
 1. Clone the repository.
 2. Run `npm install` to install the dependencies.
-3. Create a `config.js` or rename `default.config.js` to `config.js`.
-4. Follow the instructions in the `default.config.js` or `config.js` file.
+3. Create a `config.json5` or rename `default.config.json5` to `config.json5`.
+4. Follow the instructions in the `default.config.json5` or `config.json5` file.
+
+## Migration
+
+> [!NOTE]
+> If you're using this project since the `config.js` file or `config.jsonc` and you're updating to the latest version, please run the following command to migrate your configuration to the new format.
+
+```bash
+npm run migrate
+```
+
+or
+
+```bash
+node convert.js
+```
 
 ## Usage
 For a detailed usage guide, refer to this gist: [Cookie Guide](https://gist.github.com/torikushiii/59eff33fc8ea89dbc0b2e7652db9d3fd).
@@ -87,10 +105,10 @@ for convenience, but you can also use Docker commands directly.
 
 **2. Configuration**
 
-- **Rename `default.config.js`:** Create a copy of `default.config.js` named `config.js` and fill in your application's configuration:
+- **Rename `default.config.json5`:** Create a copy of `default.config.json5` named `config.json5` and fill in your application's configuration:
   ```bash
-  cp default.config.js config.js
-  # Edit config.js with your settings 
+  cp default.config.json5 config.json5
+  # Edit config.json5 with your settings 
   ```
 
 **3. Building and Running with Docker Compose**

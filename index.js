@@ -1,3 +1,6 @@
+const file = require("node:fs");
+const JSON5 = require("json5");
+
 const Command = require("./classes/command.js");
 const Config = require("./classes/config.js");
 const Got = require("./classes/got.js");
@@ -13,13 +16,13 @@ const Error = require("./object/error.js");
 
 let config;
 try {
-	config = require("./config.js");
+	config = JSON5.parse(file.readFileSync("./config.json5"));
 }
 catch {
 	try {
-		config = require("./default.config.js");
+		config = JSON5.parse(file.readFileSync("./default.config.json5"));
 	}
-	catch {
+	catch (e) {
 		throw new Error({ message: "No default or custom configuration found." });
 	}
 }
