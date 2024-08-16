@@ -69,7 +69,8 @@ module.exports = {
 					if (platform.type === "starrail") {
 						const bossCompleted = (weeklies.weeklyBoss === 0);
 						const simCompleted = (weeklies.rogueScore === weeklies.maxScore);
-						if (bossCompleted && simCompleted) {
+						const divergent = (weeklies.tournScore === weeklies.tournMaxScore && weeklies.tournUnlocked);
+						if (bossCompleted && simCompleted && divergent) {
 							continue;
 						}
 
@@ -84,6 +85,35 @@ module.exports = {
 							embed.fields.push({
 								name: "Simulated Universe",
 								value: `${weeklies.rogueScore}/${weeklies.maxScore}`,
+								inline: true
+							});
+						}
+						if (!divergent) {
+							embed.fields.push({
+								name: "Divergent Universe",
+								value: `${weeklies.tournScore}/${weeklies.tournMaxScore}`,
+								inline: true
+							});
+						}
+					}
+					if (platform.type === "nap") {
+						const bountiesCompleted = (weeklies.bounties === weeklies.bountyTotal);
+						const surveyCompleted = (weeklies.surveyPoints === weeklies.surveyPointsTotal);
+						if (bountiesCompleted && surveyCompleted) {
+							continue;
+						}
+
+						if (!bountiesCompleted) {
+							embed.fields.push({
+								name: "Bounty Comission",
+								value: `${weeklies.bounties}/${weeklies.bountyTotal}`,
+								inline: true
+							});
+						}
+						if (!surveyCompleted) {
+							embed.fields.push({
+								name: "Survey Points",
+								value: `${weeklies.surveyPoints}/${weeklies.surveyPointsTotal}`,
 								inline: true
 							});
 						}
@@ -121,7 +151,8 @@ module.exports = {
 					if (platform.type === "starrail") {
 						const bossCompleted = (weeklies.weeklyBoss === 0);
 						const simCompleted = (weeklies.rogueScore === weeklies.maxScore);
-						if (bossCompleted && simCompleted) {
+						const divergent = (weeklies.tournScore === weeklies.tournMaxScore && weeklies.tournUnlocked);
+						if (bossCompleted && simCompleted && divergent) {
 							continue;
 						}
 
@@ -130,6 +161,23 @@ module.exports = {
 						}
 						if (!simCompleted) {
 							message.push(`- **Simulated Universe**: ${weeklies.rogueScore}/${weeklies.maxScore}`);
+						}
+						if (!divergent) {
+							message.push(`- **Divergent Universe**: ${weeklies.tournScore}/${weeklies.tournMaxScore}`);
+						}
+					}
+					if (platform.type === "nap") {
+						const bountiesCompleted = (weeklies.bounties === weeklies.bountyTotal);
+						const surveyCompleted = (weeklies.surveyPoints === weeklies.surveyPointsTotal);
+						if (bountiesCompleted && surveyCompleted) {
+							continue;
+						}
+
+						if (!bountiesCompleted) {
+							message.push(`- **Bounty Comission**: ${weeklies.bounties}/${weeklies.bountyTotal}`);
+						}
+						if (!surveyCompleted) {
+							message.push(`- **Survey Points**: ${weeklies.surveyPoints}/${weeklies.surveyPointsTotal}`);
 						}
 					}
 

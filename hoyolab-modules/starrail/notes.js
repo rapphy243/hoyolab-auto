@@ -34,7 +34,7 @@ module.exports = class RealtimeNotes {
 			]
 		});
 
-		const res = await app.Got("MiHoYo", {
+		const res = await app.Got("HoYoLab", {
 			url: this.#instance.config.url.notes,
 			responseType: "json",
 			throwHttpErrors: false,
@@ -65,6 +65,7 @@ module.exports = class RealtimeNotes {
 			app.Logger.log(`${this.#instance.fullName}:Notes`, {
 				message: "HoyoLab returned non-zero retcode",
 				args: {
+					cause: app.HoyoLab.errorMessage(this.#instance.name, res.body.retcode),
 					platform: this.#instance.name,
 					uid: accountData.uid,
 					region: accountData.region,
@@ -94,7 +95,10 @@ module.exports = class RealtimeNotes {
 			weeklyBoss: data.weekly_cocoon_cnt,
 			weeklyBossLimit: data.weekly_cocoon_limit,
 			rogueScore: data.current_rogue_score,
-			maxScore: data.max_rogue_score
+			maxScore: data.max_rogue_score,
+			tournScore: data.rogue_tourn_weekly_cur,
+			tournMaxScore: data.rogue_tourn_weekly_max,
+			tournUnlocked: data.rogue_tourn_weekly_unlocked
 		};
 
 		await this.#instance.dataCache.set(accountData.uid, {

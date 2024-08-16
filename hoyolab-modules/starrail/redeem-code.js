@@ -17,7 +17,7 @@ module.exports = class RedeemCode {
 			]
 		});
 
-		const res = await app.Got("MiHoYo", {
+		const res = await app.Got("HoYoLab", {
 			url: this.#instance.config.url.redemption,
 			responseType: "json",
 			throwHttpErrors: false,
@@ -52,6 +52,7 @@ module.exports = class RedeemCode {
 			app.Logger.log(`${this.#instance.fullName}:RedeemCode`, {
 				message: "Failed to redeem code",
 				args: {
+					cause: app.HoyoLab.errorMessage(this.#instance.name, res.body.retcode),
 					code,
 					status: res.body.retcode,
 					body: res.body

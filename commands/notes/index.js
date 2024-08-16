@@ -39,10 +39,20 @@ const getNotesEmbedData = async (accounts, game, platformId) => {
 			};
 
 			if (platform.gameId === 2) {
+				const { task, maxTask, storedAttendance, storedAttendanceRefresh } = dailies;
+
+				const storedAttendanceText = `Stored Attendance: ${storedAttendance}`;
+				const refreshText = `Refresh in: ${app.Utils.formatTime(storedAttendanceRefresh)}`;
+
 				embed.fields.push(
 					{
 						name: "Dailies",
-						value: `${dailies.task}/${dailies.maxTask}`,
+						value: `${task}/${maxTask}`,
+						inline: true
+					},
+					{
+						name: "Stored Attendance",
+						value: `${storedAttendanceText}\n${refreshText}`,
 						inline: true
 					},
 					{
@@ -82,6 +92,10 @@ const getNotesEmbedData = async (accounts, game, platformId) => {
 						inline: true
 					}
 				);
+
+				if (weeklies.tournUnlocked) {
+					embed.fields[2].value += `\nDivergent Universe: ${weeklies.tournScore}/${weeklies.tournMaxScore}`;
+				}
 			}
 			else if (platform.gameId === 8) {
 				embed.fields.push(
@@ -93,6 +107,12 @@ const getNotesEmbedData = async (accounts, game, platformId) => {
 					{
 						name: "Shop Status",
 						value: data.shop.state,
+						inline: true
+					},
+					{
+						name: "Weeklies",
+						value: `Bounty Commission: ${weeklies.bounty}/${weeklies.bountyTotal}`
+						+ `\nSurvey Points: ${weeklies.surveyPoints}/${weeklies.surveyPointsTotal}`,
 						inline: true
 					},
 					{
@@ -112,13 +132,17 @@ const getNotesEmbedData = async (accounts, game, platformId) => {
 
 			let message = "";
 			if (platform.gameId === 2) {
+				const { task, maxTask, storedAttendance, storedAttendanceRefresh } = dailies;
+
 				message = [
 					`${account.nickname} - ${account.uid}`,
 					`Current Stamina: ${stamina.currentStamina}/${stamina.maxStamina}`
 					+ `\nFull in: ${app.Utils.formatTime(stamina.recoveryTime)}`,
 					"Expedition Status",
 					expedition.list.map((i, idx) => `Account ${idx + 1} - ${app.Utils.formatTime(i.remaining_time)}`).join("\n"),
-					`Dailies: ${dailies.task}/${dailies.maxTask}`,
+					`Dailies: ${task}/${maxTask}`,
+					`Stored Attendance: ${storedAttendance}`,
+					`Refresh in: ${app.Utils.formatTime(storedAttendanceRefresh)}`,
 					`Weekly Boss Chance Remaining: ${weeklies.resinDiscount}/${weeklies.resinDiscountLimit}`
 				].join("\n");
 			}
@@ -134,6 +158,10 @@ const getNotesEmbedData = async (accounts, game, platformId) => {
 					`Boss: ${weeklies.weeklyBoss}/${weeklies.weeklyBossLimit}`
 					+ `\nSimulated Universe: ${weeklies.rogueScore}/${weeklies.maxScore}`
 				].join("\n");
+
+				if (weeklies.tournUnlocked) {
+					message += `\nDivergent Universe: ${weeklies.tournScore}/${weeklies.tournMaxScore}`;
+				}
 			}
 			else if (platform.gameId === 8) {
 				message = [
@@ -141,6 +169,8 @@ const getNotesEmbedData = async (accounts, game, platformId) => {
 					`Current Stamina: ${stamina.currentStamina}/${stamina.maxStamina}`
 					+ `\nFull in: ${app.Utils.formatTime(stamina.recoveryTime)}`,
 					`Dailies: ${dailies.task}/${dailies.maxTask}`,
+					`Bounty Commission: ${weeklies.bounty}/${weeklies.bountyTotal}`,
+					`Survey Points: ${weeklies.surveyPoints}/${weeklies.surveyPointsTotal}`,
 					`Shop Status: ${data.shop.state}`,
 					`Howl Scratch Card: ${data.cardSign}`
 				].join("\n");
