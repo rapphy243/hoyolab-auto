@@ -58,7 +58,7 @@ module.exports = class HoyoLab {
 				continue;
 			}
 
-			if (this.#name === "honkai") {
+			if (this.#name === "honkai" || this.#name === "tot") {
 				const parsedCookie = this.#parseCookie(account.cookie);
 				const ltuid = account.cookie.match(/ltuid_v2=([^;]+)/)[1];
 				this.#data.push({
@@ -166,6 +166,7 @@ module.exports = class HoyoLab {
 
 			const parsedCookie = this.#parseCookie(account.cookie);
 			const ltuid = account.cookie.match(/ltuid_v2=([^;]+)/)[1];
+
 			this.#data.push({
 				cookie: parsedCookie.cookie,
 				ltuid,
@@ -175,13 +176,17 @@ module.exports = class HoyoLab {
 				dailiesCheck,
 				weekliesCheck,
 				stamina,
-				expedition
+				expedition,
+				discord: account.discord ?? null
 			});
 		}
 
 		this.#gameId = defaults.gameId;
 		this.#config = defaults.config ?? {};
-		this.#dataCache = new DataCache(600_000, this.#config.regenRate);
+
+		if (this.#config.regenRate) {
+			this.#dataCache = new DataCache(this.#config.regenRate);
+		}
 
 		HoyoLab.list.push(this);
 	}
@@ -200,7 +205,8 @@ module.exports = class HoyoLab {
 			honkai: "HonkaiImpact",
 			genshin: "GenshinImpact",
 			starrail: "StarRail",
-			nap: "ZenlessZoneZero"
+			nap: "ZenlessZoneZero",
+			tot: "TearsOfThemis"
 		};
 
 		return nameMap[this.name] || this.name;
@@ -430,7 +436,7 @@ module.exports = class HoyoLab {
 	static getAccountById (uid) {
 		if (typeof uid !== "string") {
 			throw new app.Error({
-				message: "Invalid UID provided for getAccountById expected number.",
+				message: "Invalid UID provided for getAccountById expected string.",
 				args: {
 					uid,
 					type: typeof uid
@@ -447,7 +453,7 @@ module.exports = class HoyoLab {
 			case "os_cht":
 			case "prod_gf_sg":
 			case "prod_official_cht":
-				return "TW";
+				return "TW/HK/MO";
 			case "os_asia":
 			case "prod_gf_jp":
 			case "prod_official_asia":
@@ -555,7 +561,7 @@ module.exports = class HoyoLab {
 					platform: this.name,
 					uid: accountData.uid,
 					region: accountData.region,
-					body: res.body
+					body: JSON.parse(res.body)
 				}
 			});
 

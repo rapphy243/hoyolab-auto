@@ -29,7 +29,7 @@ const formatStaminaMessage = (data, discord = false) => {
 
 		const description = [
 			discord ? `\n\`\`\`yaml\n${username} (${uid}) - ${fixedRegion}\`\`\`` : `\n${username} (${uid}) - ${fixedRegion}`,
-			`Current: ${currentStamina}/${maxStamina}`,
+			`Current: ${Math.floor(currentStamina)}/${maxStamina}`,
 			`Recovery Time: ${delta}`
 		];
 
@@ -60,7 +60,10 @@ module.exports = {
 	],
 	run: (async function stamina (context, game) {
 		const { interaction } = context;
-		const supportedGames = app.HoyoLab.supportedGames({ blacklist: "honkai" });
+		const supportedGames = app.HoyoLab.supportedGames({ blacklist: [
+			"honkai",
+			"tot"
+		]});
 
 		if (supportedGames.length === 0) {
 			const message = "There are no accounts available for checking stamina.";

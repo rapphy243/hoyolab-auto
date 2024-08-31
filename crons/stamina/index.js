@@ -4,7 +4,7 @@ module.exports = {
 	description: "Check for your stamina and notify you when it's within the set threshold.",
 	code: (async function stamina () {
 		// eslint-disable-next-line object-curly-spacing
-		const accountsList = app.HoyoLab.getActiveAccounts({ blacklist: ["honkai"] });
+		const accountsList = app.HoyoLab.getActiveAccounts({ blacklist: ["honkai", "tot"] });
 		if (accountsList.length === 0) {
 			app.Logger.warn("Cron:Stamina", "No active accounts found to run stamina check for.");
 			return;
@@ -21,13 +21,13 @@ module.exports = {
 					continue;
 				}
 
-				const { fired, persistent } = account.stamina;
-				if (fired && !persistent) {
+				const notes = await platform.notes(account);
+				if (notes.success === false) {
 					continue;
 				}
 
-				const notes = await platform.notes(account);
-				if (notes.success === false) {
+				const { fired, persistent } = account.stamina;
+				if (fired && !persistent) {
 					continue;
 				}
 
@@ -75,7 +75,9 @@ module.exports = {
 						}
 					};
 
+					const userId = webhook.createUserMention(account.discord);
 					await webhook.send(embed, {
+						content: userId,
 						author: data.assets.author,
 						icon: data.assets.logo
 					});

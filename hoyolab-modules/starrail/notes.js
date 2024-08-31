@@ -12,7 +12,9 @@ module.exports = class RealtimeNotes {
 
 	async notes (accountData) {
 		const cachedData = await this.#instance.dataCache.get(accountData.uid);
-		if (cachedData) {
+
+		const { threshold } = accountData.stamina;
+		if (cachedData && cachedData.stamina.currentStamina < threshold) {
 			return {
 				success: true,
 				data: {
@@ -104,7 +106,8 @@ module.exports = class RealtimeNotes {
 		await this.#instance.dataCache.set(accountData.uid, {
 			uid: accountData.uid,
 			nickname: accountData.nickname,
-			lastUpdate: Date.now(),
+			lastUpdate: app.Date.now(),
+			expires: app.Date.now(),
 			stamina,
 			dailies,
 			weeklies,

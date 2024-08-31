@@ -33,6 +33,7 @@ module.exports = class Webhook extends require("./template.js") {
 				wait: true
 			},
 			json: {
+				content: options.content ?? "",
 				embeds: [message],
 				username: options.author ?? "HoyoLab",
 				avatar_url: options.icon ?? "https://i.ibb.co/nRqTkXv/image.png"
@@ -61,5 +62,18 @@ module.exports = class Webhook extends require("./template.js") {
 		if (messages) {
 			return messages;
 		}
+	}
+
+	createUserMention (userData) {
+		if (!userData || typeof userData !== "object") {
+			return null;
+		}
+
+		const userId = userData?.userId;
+		if (!userId || userId === null) {
+			return null;
+		}
+
+		return `<@${String(userId)}>`;
 	}
 };

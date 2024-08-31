@@ -11,7 +11,11 @@ module.exports = {
 	expression: "* * * * *",
 	description: "Check and redeem codes supported games from HoyoLab.",
 	code: (async function codeRedeem () {
-		const accountData = app.HoyoLab.getActiveAccounts({ blacklist: "honkai" });
+		const accountData = app.HoyoLab.getActiveAccounts({ blacklist: [
+			"honkai",
+			"tot"
+		]});
+
 		if (accountData.length === 0) {
 			app.Logger.debug("CodeRedeem", "No active accounts found.");
 			return;
@@ -23,7 +27,7 @@ module.exports = {
 			return;
 		}
 
-		const codeData = await fetchCodes();
+		const codeData = await fetchCodes(accountData);
 		if (!codeData) {
 			app.Logger.debug("CodeRedeem", "No codes found.");
 			return;
