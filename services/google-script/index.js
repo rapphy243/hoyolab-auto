@@ -96,7 +96,7 @@ const DEFAULT_CONSTANTS = {
 		url: {
 			info: "https://sg-public-api.hoyolab.com/event/luna/zzz/os/info",
 			home: "https://sg-public-api.hoyolab.com/event/luna/zzz/os/home",
-			sign: "https://sg-public-api.hoyolab.com/event/luna/zzz/os/sign",
+			sign: "https://sg-public-api.hoyolab.com/event/luna/zzz/os/sign"
 		}
 	}
 };
@@ -240,7 +240,8 @@ class Game {
 				contentType: "application/json",
 				headers: {
 					"User-Agent": this.userAgent,
-					Cookie: cookieData
+					Cookie: cookieData,
+					"x-rpc-signgame": this.getSignGameHeader()
 				},
 				payload: JSON.stringify(payload)
 			};
@@ -261,11 +262,27 @@ class Game {
 		}
 	}
 
+	getSignGameHeader () {
+		switch (this.name) {
+			case "starrail":
+				return "hkrpg";
+			case "genshin":
+				return "hk4e";
+			case "zenless":
+				return "zzz";
+			default:
+				return "";
+		}
+	}
+
 	async getSignInfo (cookieData) {
 		try {
 			const url = `${this.config.url.info}?act_id=${this.config.ACT_ID}`;
 			const response = await UrlFetchApp.fetch(url, {
-				headers: { Cookie: cookieData }
+				headers: {
+					Cookie: cookieData,
+					"x-rpc-signgame": this.getSignGameHeader()
+				}
 			});
 			const data = JSON.parse(response.getContentText());
 
@@ -297,7 +314,10 @@ class Game {
 		try {
 			const url = `${this.config.url.home}?act_id=${this.config.ACT_ID}`;
 			const response = await UrlFetchApp.fetch(url, {
-				headers: { Cookie: cookieData }
+				headers: {
+					Cookie: cookieData,
+					"x-rpc-signgame": this.getSignGameHeader()
+				}
 			});
 			const data = JSON.parse(response.getContentText());
 
